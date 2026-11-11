@@ -1,0 +1,1 @@
+{"manifest_version":1,"api_version":1,"id":"com.example.bounce","name":"Bounce (C++)","version":"0.1.1","platform_min":"0.4.0","entry":"main.wasm","permissions":["display","touch"],"hardware":["display","touch"]}

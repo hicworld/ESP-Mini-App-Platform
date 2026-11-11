@@ -1,0 +1,12 @@
+{
+  "manifest_version": 1,
+  "api_version": 1,
+  "id": "org.example.colorpad",
+  "name": "Color Pad",
+  "version": "0.1.0",
+  "platform_min": "0.1.0",
+  "entry": "main.wasm",
+  "permissions": ["display", "touch"],
+  "hardware": ["display", "touch"],
+  "optional_hardware": []
+}

@@ -1,0 +1,13 @@
+{
+  "manifest_version": 1,
+  "api_version": 1,
+  "id": "org.example.firstbatch",
+  "name": "First Batch API",
+  "version": "0.1.0",
+  "platform_min": "0.5.0",
+  "entry": "main.wasm",
+  "description": "触摸手势、中文与图片、传感器、电量和反馈接口的综合示例",
+  "permissions": ["display", "touch", "sensors", "feedback"],
+  "hardware": ["display", "touch"],
+  "optional_hardware": ["imu", "magnetometer", "battery", "haptic", "led"]
+}

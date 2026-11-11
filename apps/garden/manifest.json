@@ -1,0 +1,1 @@
+{"manifest_version":1,"api_version":1,"id":"com.example.garden","name":"Pocket Garden","version":"0.1.5","platform_min":"0.4.8","entry":"main.wasm","permissions":["display","touch","environment","input","audio"],"hardware":["display","touch"],"optional_hardware":["speaker","motion","buttons","wifi"]}

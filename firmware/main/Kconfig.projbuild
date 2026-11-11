@@ -1,0 +1,23 @@
+menu "ESP Mini Platform"
+
+config PLATFORM_INTERACTION_V02
+    bool "Interaction V0.2 AS312 and mechanical keys"
+    default n
+    help
+        Enable only with the verified Interaction V0.2 board attached.
+        Keys are active-low GPIO inputs per the September 10 schematic.
+
+config PLATFORM_INTERACTION_LEFT
+    bool "Interaction board in left slot (otherwise right)"
+    depends on PLATFORM_INTERACTION_V02
+    default n
+
+config PLATFORM_OTA_TEST_FAIL_BOOT
+    bool "Force rollback when an OTA image is pending verification"
+    default n
+    help
+        Test-only fault injection. A newly installed OTA image marks itself
+        invalid and reboots so the bootloader rollback path can be verified.
+        Never enable this option in a production firmware build.
+
+endmenu

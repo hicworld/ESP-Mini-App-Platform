@@ -1,0 +1,8 @@
+[package]
+name = "miniapp"
+version = "0.1.0"
+edition = "2021"
+description = "no_std bindings for the miniature application platform ABI v1"
+license = "MIT"
+
+[dependencies]

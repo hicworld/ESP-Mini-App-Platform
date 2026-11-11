@@ -1,0 +1,1 @@
+{"private":true,"type":"module","dependencies":{"lv_font_conv":"1.5.3","wabt":"1.0.39"},"scripts":{"apps":"node build_apps.mjs","test":"node runtime_test.mjs"}}

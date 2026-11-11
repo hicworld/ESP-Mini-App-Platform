@@ -1,0 +1,12 @@
+{
+  "manifest_version": 1,
+  "api_version": 1,
+  "id": "org.example.savedcounter",
+  "name": "Saved Counter",
+  "version": "0.1.0",
+  "platform_min": "0.2.7",
+  "entry": "main.wasm",
+  "permissions": ["display", "touch", "storage"],
+  "hardware": ["display", "touch"],
+  "optional_hardware": []
+}

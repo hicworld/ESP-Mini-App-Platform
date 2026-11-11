@@ -1,0 +1,31 @@
+external/wamr/
+firmware/build/
+firmware/managed_components/
+firmware/sdkconfig
+firmware/sdkconfig.old
+tools/node_modules/
+__pycache__/
+.pytest_cache/
+.venv/
+# Rust build artifacts
+target/
+dist/
+local/
+*.pem
+!firmware/main/trusted_key.pem
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.key
+*.p12
+*.pfx
+*.log
+
+# Generated downloads and test output
+*.zip
+*.bin
+.coverage
+htmlcov/
+.mypy_cache/

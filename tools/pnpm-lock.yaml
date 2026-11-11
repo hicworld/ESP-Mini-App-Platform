@@ -1,0 +1,40 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      lv_font_conv:
+        specifier: 1.5.3
+        version: 1.5.3
+      wabt:
+        specifier: 1.0.39
+        version: 1.0.39
+
+packages:
+
+  lv_font_conv@1.5.3:
+    resolution: {integrity: sha512-0xJQThBOw2iptFccSXrKDIUTQAwr/2zhKjCI1lATIRgZo8uvYRTmenKafW9yTw6G0y5AyW00tqGpUtYuTuBIbQ==}
+    hasBin: true
+    bundledDependencies:
+      - argparse
+      - bit-buffer
+      - debug
+      - make-error
+      - mkdirp
+      - opentype.js
+      - pngjs
+
+  wabt@1.0.39:
+    resolution: {integrity: sha512-ba+dRL/75VQQY7RkU/CgriGbkoWAfS8TDyUlJfJhJ8KhtXgMl5dhNvoPNUcQ9IWRhW8u41glMSuZeTvsYq2rRg==}
+    hasBin: true
+
+snapshots:
+
+  lv_font_conv@1.5.3: {}
+
+  wabt@1.0.39: {}

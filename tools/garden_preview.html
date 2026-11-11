@@ -1,0 +1,28 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>风来小院 · WASM 应用预览</title>
+<style>body{background:#f5f1e6;color:#49553e;font:16px/1.8 system-ui;max-width:900px;margin:30px auto;padding:16px}main{display:flex;gap:24px;flex-wrap:wrap}canvas{width:min(100%,480px);height:auto;border:10px solid #666655;border-radius:22px;background:#eee;touch-action:none;box-sizing:border-box}aside{max-width:340px}button,select{background:#e7eadb;border:1px solid #a4ad8d;color:#49553e;padding:10px 16px;border-radius:12px;margin:5px;cursor:pointer}button:hover{background:#d6ddc4}p{margin:12px 0}small{color:#707863}h1{font-size:26px}#error{color:#a44}</style>
+<h1>风来小院 · 口袋生态舱</h1><p>直接运行编译后的 Garden WASM。此处音频接口静默模拟，天气与硬件输入均为模拟，设备端通过系统接口获取。</p>
+<main><canvas width="480" height="400" aria-label="口袋生态舱场景"></canvas><aside>
+<p><button id="motion">有人靠近</button><button id="a">按键 A · 起风</button><button id="b">按键 B · 投喂</button></p>
+<p><select id="phase"><option value="1">白天</option><option value="0">夜晚</option><option value="-1">未校时</option></select><select id="weather"><option value="0">晴</option><option value="3">阴</option><option value="63">雨</option><option value="75">雪</option><option value="-1">暂无天气</option></select></p>
+<p>触摸动物可以摸摸；点浇水立即洒水，再点植物切换位置。点击天空起风，顶部打开天气详情。</p>
+<p>摸摸：闭眼蹭动；喂食：低头咀嚼；有人靠近：抬头迎风。设备端已加入中文字体子集。</p>
+<small>5 FPS 场景更新；PIR 触发间隔 10 秒。系统 Home 位于应用画布之外。</small><p id="stats"></p><p id="error"></p>
+</aside></main><script>
+const canvas=document.querySelector('canvas'),ctx=canvas.getContext('2d'),decoder=new TextDecoder();let app,started=performance.now(),frames=0;
+function text(p,n){return decoder.decode(new Uint8Array(app.exports.memory.buffer,p,n));}
+function rgb(c){return '#'+(c>>>0).toString(16).padStart(6,'0');}
+let audioVolume=30;
+const host={audio:(k,v)=>{if(k===3){if(v>=0)audioVolume=v;return audioVolume;}return 0;},settings:()=>{document.querySelector('#error').textContent='设备会打开系统 Wi-Fi / 城市配置页。此电脑预览不保存网络凭据。';},millis:()=>Math.floor(performance.now()-started)>>>0,
+environment:(p,n)=>{const v=new DataView(app.exports.memory.buffer),phase=+document.querySelector('#phase').value,w=+document.querySelector('#weather').value;new Uint8Array(v.buffer,p,56).fill(0);[8|(phase>=0?1:0)|(w>=0?2:0),phase?59280:76080,245,Math.max(0,w),phase,0].forEach((x,i)=>v.setInt32(p+i*4,x,true));new Uint8Array(v.buffer,p+24,32).set(new TextEncoder().encode('Example city'));return 56;},
+scene:(p,n,bg)=>{ctx.fillStyle=rgb(bg);ctx.fillRect(0,0,480,400);const v=new DataView(app.exports.memory.buffer);
+for(let i=0;i<n;i++){let k=p+64*i;const [kind,color,x,y,w,h,r,q]=Array.from({length:8},(_,j)=>v.getInt32(k+j*4,true));ctx.fillStyle=rgb(color);ctx.beginPath();
+if(kind===1){ctx.roundRect(x,y,w,h,Math.min(r,w/2,h/2));ctx.fill();}
+if(kind===2){ctx.ellipse(x+w/2,y+h/2,w/2,h/2,0,0,Math.PI*2);ctx.fill();}
+if(kind===3){ctx.moveTo(x,y);ctx.lineTo(w,h);ctx.lineTo(r,q);ctx.closePath();ctx.fill();}
+if(kind===4){ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();ctx.font='16px system-ui';ctx.textBaseline='top';ctx.fillText(text(k+32,32).split('\0')[0],x,y);ctx.restore();}}
+document.querySelector('#stats').textContent=`真实 WASM · ${n}/96 条绘图指令 · ${++frames} 帧`;return 0;}};
+function event(t,a,b=0){if(!app)return;try{app.exports.app_event(t,a,b)}catch(e){document.querySelector('#error').textContent=e.message;}}
+canvas.addEventListener('pointerup',e=>{const r=canvas.getBoundingClientRect();event(2,Math.max(0,Math.min(479,Math.floor((e.clientX-r.left-10)*480/(r.width-20)))),Math.max(0,Math.min(399,Math.floor((e.clientY-r.top-10)*400/(r.height-20)))));});
+['motion','a','b'].forEach((id,i)=>document.getElementById(id).onclick=()=>event(3,i+1));
+WebAssembly.instantiate(Uint8Array.from(atob('__WASM__'),c=>c.charCodeAt(0)),{platform:host}).then(r=>{app=r.instance;app.exports.app_init();setInterval(()=>event(1,host.millis()),50);}).catch(e=>document.querySelector('#error').textContent=e.message);
+</script></html>

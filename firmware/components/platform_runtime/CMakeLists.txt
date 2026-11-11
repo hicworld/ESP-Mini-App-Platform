@@ -1,0 +1,31 @@
+set(WAMR_ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../external/wamr")
+if(CMAKE_BUILD_EARLY_EXPANSION)
+    idf_component_register(REQUIRES esp_timer esp_system pthread lwip)
+    return()
+endif()
+if(NOT EXISTS "${WAMR_ROOT_DIR}/build-scripts/runtime_lib.cmake")
+    message(FATAL_ERROR "Run tools/bootstrap.ps1 to fetch the pinned WAMR runtime")
+endif()
+set(WAMR_BUILD_PLATFORM "esp-idf")
+# ESP-IDF esp32s31/toolchain/cflags uses -mabi=ilp32f.
+set(WAMR_BUILD_TARGET "RISCV32_ILP32F")
+set(WAMR_BUILD_INTERP 1)
+set(WAMR_BUILD_FAST_INTERP 0)
+set(WAMR_BUILD_AOT 0)
+set(WAMR_BUILD_JIT 0)
+set(WAMR_BUILD_FAST_JIT 0)
+set(WAMR_BUILD_LIBC_BUILTIN 0)
+set(WAMR_BUILD_LIBC_WASI 0)
+set(WAMR_BUILD_SIMD 0)
+set(WAMR_BUILD_SHARED_MEMORY 0)
+set(WAMR_BUILD_THREAD_MGR 0)
+set(WAMR_BUILD_INSTRUCTION_METERING 1)
+set(WAMR_DISABLE_HW_BOUND_CHECK 1)
+include("${WAMR_ROOT_DIR}/build-scripts/runtime_lib.cmake")
+# The upstream ESP-IDF port includes POSIX emulation and executable-memory
+# support for older chips. This interpreter-only profile needs neither.
+list(FILTER WAMR_RUNTIME_LIB_SOURCE EXCLUDE REGEX "/espidf_(file|socket|memmap|platform|malloc)\\.c$")
+idf_component_register(SRCS ${WAMR_RUNTIME_LIB_SOURCE} "port_s31.c"
+    INCLUDE_DIRS "${WAMR_ROOT_DIR}/core/iwasm/include"
+    REQUIRES esp_timer esp_system pthread lwip)
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-error -Wno-format)

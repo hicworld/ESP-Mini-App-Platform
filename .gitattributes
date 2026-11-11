@@ -1,0 +1,9 @@
+# 文本统一使用 LF 行尾
+* text=auto eol=lf
+
+# 二进制产物，禁止任何行尾转换
+*.app binary
+*.wasm binary
+*.bin binary
+*.zip binary
+*.png binary

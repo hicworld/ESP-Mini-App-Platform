@@ -1,0 +1,20 @@
+[package]
+name = "rust_saved_counter"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[workspace]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+miniapp = { path = "../../sdk/rust/miniapp" }
+
+[profile.release]
+opt-level = "z"
+lto = true
+panic = "abort"
+codegen-units = 1
+strip = true

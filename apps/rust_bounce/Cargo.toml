@@ -1,0 +1,22 @@
+[package]
+name = "rust_bounce"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# Keep this package out of any surrounding workspace: its release profile and
+# linker flags are specific to the device ABI.
+[workspace]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+miniapp = { path = "../../sdk/rust/miniapp" }
+
+[profile.release]
+opt-level = "z"
+lto = true
+panic = "abort"
+codegen-units = 1
+strip = true

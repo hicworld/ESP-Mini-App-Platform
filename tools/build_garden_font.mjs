@@ -1,0 +1,16 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {execFileSync} from 'node:child_process';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const candidates=[path.join(root,'firmware/managed_components/lvgl__lvgl/tests/src/test_files/fonts/noto'),'C:/esp/mini-app-platform-build/src/firmware/managed_components/lvgl__lvgl/tests/src/test_files/fonts/noto'];
+const font=candidates.find(p=>fs.existsSync(path.join(p,'NotoSansSC-Regular.ttf')));
+if(!font)throw new Error('LVGL Noto Sans SC test font missing; prepare IDF dependencies first');
+const converters=[path.join(root,'tools/node_modules/lv_font_conv/lv_font_conv.js'),path.resolve(root,'../../应用平台/tools/node_modules/lv_font_conv/lv_font_conv.js')];
+const converter=converters.find(p=>fs.existsSync(p));
+if(!converter)throw new Error('lv_font_conv missing; install tools dependencies first');
+const source=['apps/garden/main.c','firmware/main/launcher.c','firmware/main/network_setup.c','firmware/main/network.c'].map(p=>fs.readFileSync(path.join(root,p),'utf8')).join('');
+const symbols=[...new Set([...source].filter(c=>c.codePointAt(0)>127))].sort().join('');
+execFileSync(process.execPath,[converter,'--font',path.join(font,'NotoSansSC-Regular.ttf'),'--range','0x20-0x7e','--symbols',symbols,'--size','16','--bpp','4','--format','lvgl','--no-compress','--no-kerning','--lv-include','lvgl.h','--lv-font-name','garden_font','-o',path.join(root,'firmware/main/garden_font.c')],{stdio:'inherit'});
+fs.copyFileSync(path.join(font,'OFL.txt'),path.join(root,'docs/GARDEN_FONT_OFL.txt'));
+console.log(`Generated Noto Sans SC subset: ASCII + ${symbols.length} characters (OFL)`);
